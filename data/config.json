@@ -25,7 +25,7 @@
       "relegationCount": 0,
       "promotionCount": 3,
       "accent": "#5AC8FA",
-      "playoffTeams": 6
+      "playoffTeams": 4
     }
   },
   "rules": {
@@ -36,9 +36,9 @@
       "wins",
       "points_for"
     ],
-    "summary": "Premier League: the top 6 make the playoffs. The other 4 drop into a consolation bracket and only its winner stays up — the other 3 are relegated. G.R.I.T. League: the champion, the runner-up and the winner of the third-place game are promoted.",
+    "summary": "Premier League: the top 6 make the playoffs. The other 4 drop into a consolation bracket and only its winner stays up — the other 3 are relegated. G.R.I.T. League: only the top 4 make the playoffs, and 3 of those 4 are promoted — the champion, the runner-up and the winner of the third-place game.",
     "premierNote": "Finish in the top 6 and you are safe. Finish 7th to 10th and you have to win the consolation bracket to survive.",
-    "gritNote": "Reach the final and you are up. Lose in the semi-finals and the third-place game decides the last promotion spot."
+    "gritNote": "Only the top 4 reach the playoffs, and 3 of them go up. Finish 5th and you are done. Reach the final and you are promoted; lose the semi-final and the third-place game decides it."
   },
   "payouts": {
     "_comment": "One combined pot across both leagues. buyIn is per team; prizes must sum to the pot.",

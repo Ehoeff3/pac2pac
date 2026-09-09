@@ -127,13 +127,13 @@ everywhere — the tables, the watch page and the odds.
 
 ```json
 "premier": { "playoffTeams": 6, "dropBracketTeams": 4, "dropSurvivors": 1, "relegationCount": 3 },
-"gleague": { "playoffTeams": 6, "promotionCount": 3 }
+"gleague": { "playoffTeams": 4, "promotionCount": 3 }
 ```
 
 - **Premier League** — top 6 make the playoffs and are safe. The other 4 fall into a consolation
   bracket; its winner stays up, the other 3 are relegated.
-- **G.R.I.T. League** — top 6 make the playoffs. The two finalists and the winner of the
-  third-place game are promoted.
+- **G.R.I.T. League** — only the top 4 make the playoffs, and 3 of those 4 are promoted: the
+  champion, the runner-up and the winner of the third-place game. Finish 5th and the season is over.
 
 This is why the league tables draw the line at 6th rather than at the foot of the table, and why
 the relegation odds are not simply "who finishes bottom three". Each simulated season plays out the
@@ -173,7 +173,7 @@ Each `body` entry becomes a paragraph. Awards render as a row of cards under the
 | --- | --- |
 | **Matchups** | Live scores for the current week, refreshed every minute. Rivalry games get a banner; two relegation-zone teams playing each other get flagged as a six-pointer. Each card carries the all-time head-to-head. |
 | **Tables** | Full league table with form guide. Green stripe = promotion places, gold = playoff places, red = relegation zone. |
-| **Promo / Releg** | Both leagues side by side. The Premier side shows who is falling into the consolation bracket; the G.R.I.T. side shows who is still alive for promotion. |
+| **Promo / Releg** | Both leagues side by side. The Premier side shows who is falling into the consolation bracket; the G.R.I.T. side shows who is still alive for promotion — only the top 4 there. |
 | **Odds** | 6,000 simulated seasons in the browser using the real remaining fixtures, with the championship and consolation brackets played out in each one. |
 | **Power Rankings** | Blends scoring, win rate, recent form and consistency, then shows how far that disagrees with the actual table. |
 | **Rivalries** | Configured rivalries plus a full head-to-head grid for the league. |
