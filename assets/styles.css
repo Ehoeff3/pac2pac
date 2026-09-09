@@ -261,6 +261,15 @@ main { padding: 4px 0 80px; }
 }
 .mu-foot .h2h { color: var(--muted); }
 
+.stakes {
+  margin-top: 10px; padding: 10px 12px; border-radius: var(--r-sm);
+  background: rgba(0, 0, 0, .22); border: 1px solid var(--line-soft);
+  font-size: 12px; line-height: 1.6; color: var(--muted);
+}
+.stakes b { color: var(--cream); font-weight: 600; }
+.stakes.peril { border-color: rgba(229, 72, 77, .3); background: var(--danger-bg); }
+.stakes.peril b { color: #ffb3b5; }
+
 .chip {
   display: inline-block; padding: 2px 8px; border-radius: 999px;
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
@@ -362,6 +371,39 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 /* ---------- Recaps ---------- */
 
 .recap { padding: 26px 28px; margin-bottom: 18px; }
+
+/* Pinned feature above the fixtures */
+.recap.is-pinned {
+  margin: 8px 0 6px;
+  border-color: rgba(212, 175, 55, .34);
+  background:
+    radial-gradient(900px 240px at 15% 0%, rgba(212,175,55,.09), transparent 70%),
+    linear-gradient(180deg, var(--pitch-700), var(--pitch-800));
+  position: relative;
+}
+.recap.is-pinned::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent 75%);
+}
+.recap.is-pinned h3 { font-size: 34px; max-width: 20ch; }
+
+/* Newspaper spread on wide screens so the feature fills its card */
+@media (min-width: 900px) {
+  .recap.is-pinned { padding: 32px 34px 28px; }
+  .recap.is-pinned .recap-body {
+    max-width: none;
+    column-count: 2;
+    column-gap: 44px;
+    column-rule: 1px solid var(--line-soft);
+    orphans: 2;
+    widows: 2;
+  }
+  .recap.is-pinned .recap-body p:first-child {
+    font-size: 16.5px;
+    color: var(--cream);
+  }
+}
+@media (max-width: 640px) { .recap.is-pinned h3 { font-size: 25px; } }
 .recap-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
 .recap-head .wknum {
   font-family: var(--display); font-size: 12px; letter-spacing: .16em;
@@ -373,6 +415,14 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 }
 .recap-body { font-size: 15px; line-height: 1.72; color: rgba(244,241,232,.9); max-width: 68ch; }
 .recap-body p { margin: 0 0 14px; }
+.recap-body h4 {
+  font-family: var(--display); font-size: 15px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--gold);
+  margin: 22px 0 12px; padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+  break-after: avoid; break-inside: avoid;
+}
+.recap-body h4:first-child { margin-top: 0; }
 .recap-body strong { color: var(--cream); }
 
 .awards { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line-soft); }

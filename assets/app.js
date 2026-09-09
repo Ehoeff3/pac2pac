@@ -603,12 +603,20 @@ function viewMatchups(host) {
   const week = Math.min(b.curWeek, b.lastRegWeek);
   const games = pairWeek(b.schedule[week]);
   const st = standings(b);
-  const relZone = new Set(st.slice(-(b.conf.relegationCount || 0)).map(t => t.rosterId));
-  const proZone = new Set(st.slice(0, b.conf.promotionCount || 0).map(t => t.rosterId));
+  const playoffs = b.conf.playoffTeams || b.meta.settings.playoff_teams || 6;
+  const dropTeams = b.conf.dropBracketTeams || 0;
+  const proCount = b.conf.promotionCount || 0;
+  const relCount = b.conf.relegationCount || 0;
+  const posOf = {};
+  st.forEach((t, i) => { posOf[t.rosterId] = i + 1; });
 
   let anyLive = false;
   games.forEach(g => { if ((g.a.points || 0) > 0 || (g.b.points || 0) > 0) anyLive = true; });
   setLive(anyLive && week === b.curWeek);
+
+  // A pinned article (season preview, big announcement) rides above the fixtures.
+  const pinned = state.recaps.find(r => r.pinned);
+  if (pinned) host.appendChild(renderArticle(pinned, true));
 
   const head = el('div', 'section-head');
   head.innerHTML = `<h2>Week ${week} — ${esc(b.conf.name)}</h2>
@@ -628,17 +636,25 @@ function viewMatchups(host) {
     const live = pa > 0 || pb > 0;
 
     const riv = rivalryFor(b, ta, tb);
-    const sixPointer = relZone.has(ta.rosterId) && relZone.has(tb.rosterId);
-    const promoClash = proZone.has(ta.rosterId) && proZone.has(tb.rosterId);
+    const posA = posOf[ta.rosterId], posB = posOf[tb.rosterId];
+
+    // A six-pointer is a game between two clubs on the wrong side of the cut:
+    // the winner climbs and the loser sinks, so the gap swings by two, not one.
+    const bothBelowCut = b.played > 0 && posA > playoffs && posB > playoffs;
+    const relSixPointer = bothBelowCut && dropTeams > 0;
+    const proSixPointer = bothBelowCut && proCount > 0;
+    const topOfTable = b.played > 0 && posA <= 2 && posB <= 2;
 
     const card = el('div', 'mu' + (riv ? ' is-rivalry' : ''));
 
     if (riv) {
       card.appendChild(el('div', 'mu-flag', `⚔ ${esc(rivalryLabel(riv, ta, tb))}`));
-    } else if (sixPointer) {
+    } else if (relSixPointer) {
       card.appendChild(el('div', 'mu-flag six-pointer', '▼ Relegation six-pointer'));
-    } else if (promoClash) {
-      card.appendChild(el('div', 'mu-flag', '▲ Promotion clash'));
+    } else if (proSixPointer) {
+      card.appendChild(el('div', 'mu-flag', '▲ Promotion six-pointer'));
+    } else if (topOfTable) {
+      card.appendChild(el('div', 'mu-flag', '★ Top of the table'));
     }
 
     const body = el('div', 'mu-body');
@@ -661,6 +677,21 @@ function viewMatchups(host) {
       bl.style.cssText = 'font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;font-style:italic';
       bl.textContent = riv.blurb;
       body.appendChild(bl);
+    }
+
+    // Explain the stakes — shown even when a rivalry banner took the top slot.
+    if (relSixPointer || proSixPointer) {
+      const survivors = dropTeams - (b.conf.dropSurvivors || 0);
+      const stakes = el('div', 'stakes' + (relSixPointer ? ' peril' : ''));
+      stakes.innerHTML = relSixPointer
+        ? `<b>Why it's a six-pointer.</b> Both clubs are outside the top ${playoffs}, so both are
+           currently headed for the consolation bracket — where ${survivors} of the ${dropTeams} go down.
+           The winner climbs toward safety and the loser sinks, so the gap between them swings by
+           two games instead of one. That's the whole idea: a win here is worth double.`
+        : `<b>Why it's a six-pointer.</b> Both clubs are outside the top ${playoffs}, and the playoffs are
+           the only road up — promotion is won in that bracket. The winner takes a step toward it and
+           leaves the loser two games back instead of one.`;
+      body.appendChild(stakes);
     }
 
     card.appendChild(body);
@@ -1411,24 +1442,35 @@ function viewRecaps(host) {
     return;
   }
 
-  state.recaps.forEach(r => {
-    const card = el('div', 'card recap');
-    const bodyHTML = (r.body || []).map(p => `<p>${p}</p>`).join('');
-    card.innerHTML = `
-      <div class="recap-head"><span class="wknum">Week ${esc(r.week)}</span>
-        <span class="team-sub">${esc(r.date || '')}</span></div>
-      <h3>${esc(r.headline || '')}</h3>
-      <div class="recap-body">${bodyHTML}</div>`;
-    if ((r.awards || []).length) {
-      const aw = el('div', 'awards');
-      r.awards.forEach(a => {
-        aw.innerHTML += `<div class="award"><div class="lbl">${esc(a.label)}</div>
-          <div class="val">${esc(a.team)}</div><div class="desc">${esc(a.note || '')}</div></div>`;
-      });
-      card.appendChild(aw);
-    }
-    host.appendChild(card);
-  });
+  state.recaps.forEach(r => host.appendChild(renderArticle(r, false)));
+}
+
+/** One written piece — weekly recap or a pinned feature. */
+function renderArticle(r, isPinned) {
+  const card = el('div', 'card recap' + (isPinned ? ' is-pinned' : ''));
+  // A body line starting with "## " is a section subhead, not a paragraph.
+  const bodyHTML = (r.body || [])
+    .map(p => /^##\s+/.test(p) ? `<h4>${esc(p.replace(/^##\s+/, ''))}</h4>` : `<p>${p}</p>`)
+    .join('');
+  const kicker = r.kicker || (r.week ? `Week ${r.week}` : 'Feature');
+
+  card.innerHTML = `
+    <div class="recap-head">
+      <span class="wknum">${esc(kicker)}</span>
+      <span class="team-sub">${esc(r.date || '')}</span>
+    </div>
+    <h3>${esc(r.headline || '')}</h3>
+    <div class="recap-body">${bodyHTML}</div>`;
+
+  if ((r.awards || []).length) {
+    const aw = el('div', 'awards');
+    r.awards.forEach(a => {
+      aw.innerHTML += `<div class="award"><div class="lbl">${esc(a.label)}</div>
+        <div class="val">${esc(a.team)}</div><div class="desc">${esc(a.note || '')}</div></div>`;
+    });
+    card.appendChild(aw);
+  }
+  return card;
 }
 
 /* ---------------- refresh ---------------- */
