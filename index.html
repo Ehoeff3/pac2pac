@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PAC2PAC — Premier & G.R.I.T. League</title>
+<meta name="description" content="Live matchups, league tables, promotion and relegation watch for the PAC2PAC fantasy football pyramid.">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏆</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-crest" id="brandCrest">P2P</div>
+      <div>
+        <h1 id="siteName">PAC2PAC</h1>
+        <div class="tagline" id="tagline">Two leagues. One ladder.</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="wk" id="weekLabel">—</div>
+      <div id="seasonLabel">Season</div>
+      <div class="live-dot is-idle" id="liveDot"><i></i> <span>Idle</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav">
+  <div class="nav-inner" id="navBar">
+    <button data-view="matchups" class="active">Matchups</button>
+    <button data-view="tables">Tables</button>
+    <button data-view="watch">Promo / Releg</button>
+    <button data-view="odds">Odds</button>
+    <button data-view="power">Power Rankings</button>
+    <button data-view="rivalries">Rivalries</button>
+    <button data-view="records">Records</button>
+    <button data-view="money">Money</button>
+    <button data-view="recaps">Recaps</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <div class="league-switch" id="leagueSwitch"></div>
+
+  <section class="view active" id="view-matchups"></section>
+  <section class="view" id="view-tables"></section>
+  <section class="view" id="view-watch"></section>
+  <section class="view" id="view-odds"></section>
+  <section class="view" id="view-power"></section>
+  <section class="view" id="view-rivalries"></section>
+  <section class="view" id="view-records"></section>
+  <section class="view" id="view-money"></section>
+  <section class="view" id="view-recaps"></section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    Data from the Sleeper API · updates automatically · <span id="lastUpdated">—</span>
+  </div>
+</footer>
+
+<script src="assets/history.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
