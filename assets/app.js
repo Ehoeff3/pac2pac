@@ -87,9 +87,16 @@ function teamHTML(team, size = '', sub) {
 
 async function boot() {
   try {
+    // GitHub Pages caches these for ~10 minutes, which meant a new recap could
+    // sit invisible after a commit. Bucketed by the minute: still cacheable,
+    // but never more than 60s stale, and nobody has to hard-refresh.
+    const bust = 'v=' + Math.floor(Date.now() / 60000);
     const [cfg, recaps] = await Promise.all([
-      getJSON('data/config.json'),
-      getJSON('data/recaps.json').catch(() => ({ recaps: [] })),
+      getJSON('data/config.json?' + bust),
+      getJSON('data/recaps.json?' + bust).catch(e => {
+        state.recapsError = String((e && e.message) || e);
+        return { recaps: [] };
+      }),
     ]);
     state.cfg = cfg;
     state.recaps = (recaps.recaps || []).slice().sort((a, b) => (b.week - a.week));
@@ -1476,7 +1483,12 @@ function viewRecaps(host) {
   host.appendChild(head);
 
   if (!state.recaps.length) {
-    host.appendChild(el('div', 'empty', '<strong>First recap lands after Week 1</strong>Written the morning after Monday Night Football.'));
+    host.appendChild(el('div', 'empty', state.recapsError
+      ? `<strong>Could not load the write-ups</strong>
+         <code>data/recaps.json</code> did not load: ${esc(state.recapsError)}.<br><br>
+         Usually that means the file is missing from the repo, sitting in the wrong folder,
+         or has a JSON syntax error.`
+      : '<strong>First recap lands after Week 1</strong>Written the morning after Monday Night Football.'));
     return;
   }
 
