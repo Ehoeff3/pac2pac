@@ -163,7 +163,30 @@ The `summary` text prints under each league table. Edit it if the wording change
 }
 ```
 
-Each `body` entry becomes a paragraph. Awards render as a row of cards under the article.
+Each `body` entry becomes a paragraph. A line starting with `## ` becomes a section subhead.
+Awards render as a row of cards under the article.
+
+**Quote of the week.** A `body` entry can be an object instead of a string, and it renders as a
+gold-ruled pull-quote — used for the top scorer's postgame comment:
+
+```json
+"body": [
+  "A paragraph about his game.",
+  { "quote": "I imagine I'll have something better to say then.",
+    "who": "jackfierro",
+    "note": "179.86 — highest score in the Premier League, Week 1" },
+  "The reaction paragraph."
+]
+```
+
+Put it wherever it reads best in the flow. `note` is optional.
+
+Set `"pinned": true` on one entry and it rides above the fixtures on the front page. Set it to
+`false` on the previous week's entry when you add a new one — only one should be pinned.
+
+**The archive.** The Recaps tab shows one write-up at a time with a week rail across the top and a
+list of everything else below it. Each entry has its own link — `.../#week-1`, `.../#preview` — so
+you can send a specific week straight into the group chat and it opens on that article.
 
 ---
 

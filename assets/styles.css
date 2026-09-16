@@ -431,6 +431,77 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 .award .val { font-family: var(--display); font-size: 17px; font-weight: 600; }
 .award .desc { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
 
+/* ---------- Pull quote ---------- */
+
+.pullquote {
+  margin: 20px 0; padding: 18px 20px 16px;
+  border-left: 3px solid var(--gold);
+  background: linear-gradient(90deg, rgba(212,175,55,.09), rgba(212,175,55,0) 70%);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  break-inside: avoid;
+}
+.pullquote blockquote {
+  margin: 0; font-family: var(--display);
+  font-size: 21px; font-weight: 500; line-height: 1.36;
+  color: var(--cream); font-style: italic;
+}
+.pullquote blockquote::before { content: '\201C'; color: var(--gold); margin-right: 1px; }
+.pullquote blockquote::after  { content: '\201D'; color: var(--gold); margin-left: 1px; }
+.pullquote figcaption { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.pullquote .who {
+  font-size: 11px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--gold-bright);
+}
+.pullquote .note { font-size: 11px; color: var(--muted-dim); letter-spacing: .04em; }
+@media (max-width: 640px) { .pullquote blockquote { font-size: 18px; } }
+
+/* ---------- Recap archive ---------- */
+
+.recap-rail { margin: 4px 0 18px; }
+
+.read-more { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.read-more button {
+  appearance: none; cursor: pointer; background: none;
+  border: 1px solid rgba(212,175,55,.4); border-radius: 999px;
+  color: var(--gold-bright); font-family: var(--display);
+  font-size: 14px; font-weight: 600; letter-spacing: .09em;
+  text-transform: uppercase; padding: 8px 18px; transition: all .15s ease;
+}
+.read-more button:hover { background: rgba(212,175,55,.12); border-color: var(--gold); }
+
+.archive-list { padding: 4px 0; }
+
+.archive-row {
+  display: grid; grid-template-columns: 74px minmax(0, 1fr) auto;
+  align-items: center; gap: 14px; width: 100%; text-align: left;
+  appearance: none; background: none; border: 0; cursor: pointer;
+  padding: 15px 20px; border-top: 1px solid var(--line-soft);
+  color: inherit; font: inherit; transition: background .15s ease;
+}
+.archive-list .archive-row:first-child { border-top: 0; }
+.archive-row:hover { background: rgba(255,255,255,.03); }
+.archive-row .wk {
+  font-family: var(--display); font-size: 15px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--gold);
+}
+.archive-row .txt { min-width: 0; }
+.archive-row .hl {
+  display: block; font-family: var(--display); font-size: 19px; font-weight: 600;
+  line-height: 1.25; color: var(--cream);
+}
+.archive-row .dt { display: block; font-size: 11px; color: var(--muted-dim); margin-top: 4px; letter-spacing: .05em; }
+.archive-row .go {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted-dim); white-space: nowrap;
+}
+.archive-row:hover .go { color: var(--gold-bright); }
+
+@media (max-width: 640px) {
+  .archive-row { grid-template-columns: 60px minmax(0, 1fr); padding: 13px 15px; }
+  .archive-row .go { display: none; }
+  .archive-row .hl { font-size: 16px; }
+}
+
 /* ---------- Money ---------- */
 
 .money-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }

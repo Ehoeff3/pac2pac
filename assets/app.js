@@ -117,6 +117,8 @@ async function boot() {
     wireNav();
 
     await Promise.all(state.order.map(k => loadLeague(k)));
+    applyHash();                       // honour a shared link like …/#week-1
+    window.addEventListener('hashchange', () => { applyHash(); render(); });
     render();
 
     // All-time history is a bigger pull; fetch it behind the live views and
@@ -540,10 +542,25 @@ function simPlayoffs(seeds, mu, sigma) {
 
 /* ---------------- nav / shell ---------------- */
 
+/** Open a specific write-up when the URL carries #week-3 / #preview. */
+function applyHash() {
+  const h = (location.hash || '').replace(/^#/, '');
+  if (!h) return;
+  if (!state.recaps.some(r => recapId(r) === h)) return;
+  state.view = 'recaps';
+  state.recapSel = h;
+  [...$('#navBar').children].forEach(b => b.classList.toggle('active', b.dataset.view === 'recaps'));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-recaps'));
+}
+
 function wireNav() {
   $('#navBar').addEventListener('click', e => {
     const btn = e.target.closest('button[data-view]');
     if (!btn) return;
+    // Leaving the archive drops the deep link so the URL stops lying.
+    if (state.view === 'recaps' && btn.dataset.view !== 'recaps' && location.hash) {
+      try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    }
     state.view = btn.dataset.view;
     [...$('#navBar').children].forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + state.view));
@@ -616,7 +633,23 @@ function viewMatchups(host) {
 
   // A pinned article (season preview, big announcement) rides above the fixtures.
   const pinned = state.recaps.find(r => r.pinned);
-  if (pinned) host.appendChild(renderArticle(pinned, true));
+  if (pinned) {
+    const art = renderArticle(pinned, true);
+    if (state.recaps.length > 1) {
+      const more = el('div', 'read-more');
+      more.innerHTML = `<button>Read every week's write-up →</button>`;
+      more.querySelector('button').onclick = () => {
+        state.view = 'recaps';
+        state.recapSel = recapId(pinned);
+        [...$('#navBar').children].forEach(b => b.classList.toggle('active', b.dataset.view === 'recaps'));
+        document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-recaps'));
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+      art.appendChild(more);
+    }
+    host.appendChild(art);
+  }
 
   const head = el('div', 'section-head');
   head.innerHTML = `<h2>Week ${week} — ${esc(b.conf.name)}</h2>
@@ -1431,10 +1464,15 @@ function viewMoney(host) {
   }
 }
 
+/** Stable id for deep links: #preview, #week-1, #week-2 … */
+function recapId(r) { return r.week === 0 ? 'preview' : 'week-' + r.week; }
+function recapLabel(r) { return r.week === 0 ? 'Preview' : 'Week ' + r.week; }
+
 function viewRecaps(host) {
   host.innerHTML = '';
   const head = el('div', 'section-head');
-  head.innerHTML = `<h2>Weekly word</h2><div class="sub">What actually happened, and who should be embarrassed</div>`;
+  head.innerHTML = `<h2>Weekly word</h2>
+    <div class="sub">${state.recaps.length} entr${state.recaps.length === 1 ? 'y' : 'ies'} this season</div>`;
   host.appendChild(head);
 
   if (!state.recaps.length) {
@@ -1442,16 +1480,79 @@ function viewRecaps(host) {
     return;
   }
 
-  state.recaps.forEach(r => host.appendChild(renderArticle(r, false)));
+  // Keep the selection valid; default to the newest entry.
+  if (!state.recapSel || !state.recaps.some(r => recapId(r) === state.recapSel)) {
+    state.recapSel = recapId(state.recaps[0]);
+  }
+  const current = state.recaps.find(r => recapId(r) === state.recapSel) || state.recaps[0];
+
+  // Week rail
+  const rail = el('div', 'league-switch recap-rail');
+  state.recaps.forEach(r => {
+    const b = el('button', recapId(r) === state.recapSel ? 'active' : '', esc(recapLabel(r)));
+    b.title = r.headline || '';
+    b.onclick = () => selectRecap(recapId(r));
+    rail.appendChild(b);
+  });
+  host.appendChild(rail);
+
+  host.appendChild(renderArticle(current, false));
+
+  // Everything else, newest first
+  const others = state.recaps.filter(r => r !== current);
+  if (others.length) {
+    const h = el('div', 'section-head');
+    h.innerHTML = `<h2>The archive</h2><div class="sub">Every write-up, all season</div>`;
+    host.appendChild(h);
+
+    const list = el('div', 'card archive-list');
+    others.forEach(r => {
+      const row = el('button', 'archive-row');
+      row.innerHTML = `
+        <span class="wk">${esc(recapLabel(r))}</span>
+        <span class="txt">
+          <span class="hl">${esc(r.headline || '')}</span>
+          <span class="dt">${esc(r.date || '')}${(r.awards || []).length ? ' · ' + r.awards.length + ' awards' : ''}</span>
+        </span>
+        <span class="go">Read →</span>`;
+      row.onclick = () => selectRecap(recapId(r));
+      list.appendChild(row);
+    });
+    host.appendChild(list);
+  }
+
+  const note = el('div', '');
+  note.style.cssText = 'margin-top:16px;font-size:12px;color:var(--muted-dim);line-height:1.7';
+  note.innerHTML = `Every write-up has its own link — the address bar updates as you switch weeks,
+    so you can drop a specific week straight into the group chat.`;
+  host.appendChild(note);
+}
+
+function selectRecap(id) {
+  state.recapSel = id;
+  try { history.replaceState(null, '', '#' + id); } catch (e) { location.hash = id; }
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /** One written piece — weekly recap or a pinned feature. */
 function renderArticle(r, isPinned) {
   const card = el('div', 'card recap' + (isPinned ? ' is-pinned' : ''));
-  // A body line starting with "## " is a section subhead, not a paragraph.
-  const bodyHTML = (r.body || [])
-    .map(p => /^##\s+/.test(p) ? `<h4>${esc(p.replace(/^##\s+/, ''))}</h4>` : `<p>${p}</p>`)
-    .join('');
+  // Body entries: a string is a paragraph, "## …" is a subhead, and an object
+  // with a `quote` becomes a pull-quote (the week's top scorer gets the floor).
+  const bodyHTML = (r.body || []).map(p => {
+    if (p && typeof p === 'object' && p.quote) {
+      return `<figure class="pullquote">
+          <blockquote>${esc(p.quote)}</blockquote>
+          <figcaption>
+            <span class="who">${esc(p.who || '')}</span>
+            ${p.note ? `<span class="note">${esc(p.note)}</span>` : ''}
+          </figcaption>
+        </figure>`;
+    }
+    const s = String(p);
+    return /^##\s+/.test(s) ? `<h4>${esc(s.replace(/^##\s+/, ''))}</h4>` : `<p>${s}</p>`;
+  }).join('');
   const kicker = r.kicker || (r.week ? `Week ${r.week}` : 'Feature');
 
   card.innerHTML = `
