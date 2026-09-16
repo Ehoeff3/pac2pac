@@ -431,6 +431,26 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 .award .val { font-family: var(--display); font-size: 17px; font-weight: 600; }
 .award .desc { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
 
+/* ---------- Week stepper ---------- */
+
+.week-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: -4px 0 16px; }
+.week-nav button {
+  appearance: none; cursor: pointer; background: var(--pitch-700);
+  border: 1px solid var(--line-soft); border-radius: 999px; color: var(--muted);
+  font-family: var(--display); font-size: 13px; font-weight: 600;
+  letter-spacing: .09em; text-transform: uppercase; padding: 6px 14px;
+  transition: all .15s ease;
+}
+.week-nav button:hover:not(:disabled) { color: var(--cream); border-color: var(--line); }
+.week-nav button:disabled { opacity: .3; cursor: default; }
+.week-nav button.current { color: var(--gold-bright); border-color: rgba(212,175,55,.4); }
+.week-tag {
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted-dim); padding: 0 4px;
+}
+.week-tag.final { color: var(--muted); }
+.week-tag.live { color: var(--promo); }
+
 /* ---------- Pull quote ---------- */
 
 .pullquote {

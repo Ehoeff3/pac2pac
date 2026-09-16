@@ -163,7 +163,6 @@ async function loadLeague(key) {
   ]);
 
   const lastRegWeek = (meta.settings.playoff_week_start || 15) - 1;
-  const curWeek = Math.min(Number(state.nfl.display_week) || 1, lastRegWeek + 4);
 
   // Pull the whole regular-season schedule (future weeks return pairings with 0 points).
   const weeks = [];
@@ -202,7 +201,17 @@ async function loadLeague(key) {
   const byRoster = {};
   teams.forEach(t => { byRoster[t.rosterId] = t; });
 
-  const bundle = { key, conf, meta, users, rosters, teams, byRoster, schedule, lastRegWeek, curWeek };
+  // How many weeks are actually FINAL. Sleeper's `display_week` lags — it still
+  // reads 1 on the Tuesday after Week 1 — so deriving the cutoff from it hid a
+  // completed week from every computed view. Win/loss records only move when a
+  // week finalises, so they are the authoritative signal.
+  const completed = Math.min(
+    lastRegWeek,
+    Math.max(0, ...teams.map(t => t.wins + t.losses + t.ties))
+  );
+  const curWeek = Math.min(completed + 1, lastRegWeek);
+
+  const bundle = { key, conf, meta, users, rosters, teams, byRoster, schedule, lastRegWeek, curWeek, completed };
   computeWeekly(bundle);
   state.leagues[key] = bundle;
   return bundle;
@@ -228,7 +237,7 @@ function computeWeekly(b) {
 
   for (let w = 1; w <= b.lastRegWeek; w++) {
     const games = pairWeek(b.schedule[w]);
-    const settled = w < b.curWeek && games.some(g => (g.a.points || 0) > 0 || (g.b.points || 0) > 0);
+    const settled = w <= b.completed && games.some(g => (g.a.points || 0) > 0 || (g.b.points || 0) > 0);
     if (!settled) continue;
 
     games.forEach(g => {
@@ -417,7 +426,7 @@ function simulate(b) {
 
   // Remaining regular-season fixtures
   const fixtures = [];
-  for (let w = b.curWeek; w <= b.lastRegWeek; w++) {
+  for (let w = b.completed + 1; w <= b.lastRegWeek; w++) {
     pairWeek(b.schedule[w]).forEach(g => {
       const a = idx[g.a.roster_id], z = idx[g.b.roster_id];
       if (a != null && z != null) fixtures.push([a, z]);
@@ -624,7 +633,9 @@ function viewMatchups(host) {
   const b = state.leagues[state.active];
   if (!b) { host.innerHTML = setupCard('This league is not linked yet.'); return; }
 
-  const week = Math.min(b.curWeek, b.lastRegWeek);
+  const week = state.weekSel == null
+    ? b.curWeek
+    : Math.min(Math.max(state.weekSel, 1), b.lastRegWeek);
   const games = pairWeek(b.schedule[week]);
   const st = standings(b);
   const playoffs = b.conf.playoffTeams || b.meta.settings.playoff_teams || 6;
@@ -658,10 +669,33 @@ function viewMatchups(host) {
     host.appendChild(art);
   }
 
+  const isFinal = week <= b.completed;
   const head = el('div', 'section-head');
   head.innerHTML = `<h2>Week ${week} — ${esc(b.conf.name)}</h2>
-    <div class="sub">${anyLive ? 'Live scoring · refreshes every minute' : 'Kickoff pending'}</div>`;
+    <div class="sub">${isFinal ? 'Final' : (anyLive ? 'Live scoring · refreshes every minute' : 'Kickoff pending')}</div>`;
   host.appendChild(head);
+
+  // Week stepper — a finished week shouldn't disappear the moment the next opens.
+  if (b.lastRegWeek > 1) {
+    const nav = el('div', 'week-nav');
+    const step = (label, target, disabled) => {
+      const btn = el('button', '', label);
+      btn.disabled = disabled;
+      if (!disabled) btn.onclick = () => { state.weekSel = target; render(); };
+      return btn;
+    };
+    nav.appendChild(step('‹ Prev', week - 1, week <= 1));
+    const tag = el('span', 'week-tag' + (isFinal ? ' final' : anyLive ? ' live' : ''));
+    tag.textContent = isFinal ? `Week ${week} final` : anyLive ? `Week ${week} in progress` : `Week ${week} to come`;
+    nav.appendChild(tag);
+    nav.appendChild(step('Next ›', week + 1, week >= b.lastRegWeek));
+    if (week !== b.curWeek) {
+      const jump = step('Jump to current', null, false);
+      jump.className = 'current';
+      nav.appendChild(jump);
+    }
+    host.appendChild(nav);
+  }
 
   if (!games.length) {
     host.appendChild(el('div', 'empty', '<strong>No fixtures</strong>Sleeper has not published this week yet.'));
@@ -1613,6 +1647,16 @@ async function refresh() {
         t.pf = (s.fpts || 0) + (s.fpts_decimal || 0) / 100;
         t.pa = (s.fpts_against || 0) + (s.fpts_against_decimal || 0) / 100;
       });
+
+      // A week may have finalised since load — recompute the cutoff and, if it
+      // moved, pull the newly current week's fixtures too.
+      const before = b.completed;
+      b.completed = Math.min(b.lastRegWeek, Math.max(0, ...b.teams.map(t => t.wins + t.losses + t.ties)));
+      b.curWeek = Math.min(b.completed + 1, b.lastRegWeek);
+      if (b.completed !== before && b.curWeek !== w) {
+        b.schedule[b.curWeek] = await getJSON(`${API}/league/${b.conf.id}/matchups/${b.curWeek}`).catch(() => b.schedule[b.curWeek]);
+        state.history = null;              // records/H2H need rebuilding
+      }
       computeWeekly(b);
     }
     render();

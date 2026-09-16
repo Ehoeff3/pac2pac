@@ -41,6 +41,11 @@ async function loadHistory() {
   return history;
 }
 
+/** Changes whenever a league finalises another week, so the cache can't go stale. */
+function seasonStamp() {
+  return state.order.map(k => k + ':' + (state.leagues[k] ? state.leagues[k].completed : '?')).join('|');
+}
+
 function readHistoryCache() {
   try {
     const raw = localStorage.getItem(HISTORY_CACHE_KEY);
@@ -48,6 +53,7 @@ function readHistoryCache() {
     const obj = JSON.parse(raw);
     if (!obj.builtAt || Date.now() - obj.builtAt > HISTORY_TTL_MS) return null;
     if (obj.archiveId !== (state.cfg.history && state.cfg.history.archiveLeagueId)) return null;
+    if (obj.stamp !== seasonStamp()) return null;   // a new week finalised — rebuild
     return obj;
   } catch (e) { return null; }
 }
@@ -56,6 +62,7 @@ function writeHistoryCache(h) {
   try {
     h.builtAt = Date.now();
     h.archiveId = state.cfg.history && state.cfg.history.archiveLeagueId;
+    h.stamp = seasonStamp();
     localStorage.setItem(HISTORY_CACHE_KEY, JSON.stringify(h));
   } catch (e) { /* private mode, quota — history just rebuilds next visit */ }
 }
@@ -166,7 +173,7 @@ function currentSeasonAsHistory(b) {
     pairWeek(b.schedule[w]).forEach(g => {
       const aPts = g.a.points || 0, bPts = g.b.points || 0;
       if (aPts <= 0 && bPts <= 0) return;
-      if (w >= b.curWeek) return;                            // in progress, not final
+      if (w > b.completed) return;                           // in progress, not final
       const ta = b.byRoster[g.a.roster_id], tb = b.byRoster[g.b.roster_id];
       if (!ta || !tb) return;
       games.push({ week: w, a: ta.ownerId, b: tb.ownerId, aPts, bPts, post: false });
