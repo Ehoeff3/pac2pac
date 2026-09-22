@@ -1,0 +1,166 @@
+{
+  "_readme": "Edit this file to configure the site. You do not need to touch any other file for normal updates.",
+  "siteName": "PAC2PAC",
+  "brandMark": "P2P",
+  "tagline": "Two leagues. One ladder. No mercy.",
+  "season": "2026",
+  "leagues": {
+    "premier": {
+      "id": "1400580506310983680",
+      "name": "Premier League",
+      "short": "PREM",
+      "tier": 1,
+      "relegationCount": 3,
+      "promotionCount": 0,
+      "accent": "#D4AF37",
+      "playoffTeams": 6,
+      "dropBracketTeams": 4,
+      "dropSurvivors": 1
+    },
+    "gleague": {
+      "id": "1400580835693846528",
+      "name": "G.R.I.T. League",
+      "short": "GRIT",
+      "tier": 2,
+      "relegationCount": 0,
+      "promotionCount": 3,
+      "accent": "#5AC8FA",
+      "playoffTeams": 4
+    }
+  },
+  "rules": {
+    "_comment": "Both ladders are decided in the postseason brackets, not the regular-season table.",
+    "relegationBasis": "consolation_bracket",
+    "promotionBasis": "playoff_bracket",
+    "tiebreakers": [
+      "wins",
+      "points_for"
+    ],
+    "summary": "Premier League: the top 6 make the playoffs. The other 4 drop into a consolation bracket and only its winner stays up — the other 3 are relegated. G.R.I.T. League: only the top 4 make the playoffs, and 3 of those 4 are promoted — the champion, the runner-up and the winner of the third-place game.",
+    "premierNote": "Finish in the top 6 and you are safe. Finish 7th to 10th and you have to win the consolation bracket to survive.",
+    "gritNote": "Only the top 4 reach the playoffs, and 3 of them go up. Finish 5th and you are done. Reach the final and you are promoted; lose the semi-final and the third-place game decides it."
+  },
+  "payouts": {
+    "_comment": "One combined pot across both leagues. buyIn is per team; prizes must sum to the pot.",
+    "currency": "$",
+    "buyIn": 50,
+    "combined": true,
+    "prizes": [
+      {
+        "label": "Premier League champion",
+        "amount": 500,
+        "league": "premier",
+        "place": 1
+      },
+      {
+        "label": "Premier League runner-up",
+        "amount": 200,
+        "league": "premier",
+        "place": 2
+      },
+      {
+        "label": "Premier League third place",
+        "amount": 50,
+        "league": "premier",
+        "place": 3
+      },
+      {
+        "label": "G.R.I.T. League champion",
+        "amount": 150,
+        "league": "gleague",
+        "place": 1
+      }
+    ],
+    "notes": "$50 per team across both leagues. Every dollar is paid out to the four places above."
+  },
+  "rivalries": [
+    {
+      "teams": [
+        "PeterNell",
+        "TheGloveDidntFit"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "TySpaltholz",
+        "bencawyer"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "KyleRobertson45",
+        "kcjaeb"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "hhairston",
+        "CaptWong"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "BalineseBandit",
+        "jackfierro"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "Ehoeff3",
+        "Coyne4"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "chrismarzo",
+        "Tvas22"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "bencawyer",
+        "Coyne4"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "Ehoeff3",
+        "jackfierro"
+      ],
+      "name": "",
+      "blurb": ""
+    },
+    {
+      "teams": [
+        "Tvas22",
+        "shaw5"
+      ],
+      "name": "",
+      "blurb": ""
+    }
+  ],
+  "history": {
+    "_comment": "Seed pre-site history here. h2h entries are all-time records BEFORE this season; the site adds this season automatically.",
+    "archiveLeagueId": "1388341853870366720",
+    "firstSeason": "2026",
+    "h2h": [],
+    "champions": [],
+    "movements": []
+  }
+}
