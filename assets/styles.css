@@ -2,38 +2,54 @@
    PAC2PAC — Euro-club fantasy football
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
 
 :root {
-  --pitch-900: #05170F;
-  --pitch-800: #082116;
-  --pitch-700: #0B2E20;
-  --pitch-600: #0F3B29;
-  --pitch-500: #164A33;
-  --line: rgba(212, 175, 55, 0.16);
-  --line-soft: rgba(242, 239, 230, 0.09);
+  /* ---- Carnegie Mellon core ---- */
+  --cmu-red:      #C41230;   --cmu-red-rgb: 196,18,48;
+  --scots-rose:   #EF3A47;
+  --gold:         #FDB515;   --gold-rgb: 253,181,21;   /* Gold Thread */
+  --gold-bright:  #FFD166;
+  --green-thread: #009647;
+  --teal-thread:  #008F91;
+  --sky:          #007BC0;   /* Highlands Sky Blue */
+  --weaver:       #182C4B;   /* Weaver Blue */
+  --skibo:        #941120;
+  --iron:         #6D6E71;
+  --steel:        #E0E0E0;
 
-  --gold: #D4AF37;
-  --gold-bright: #F0C75E;
-  --cream: #F4F1E8;
-  --muted: #93AA9C;
-  --muted-dim: #6B8377;
+  /* ---- surfaces: near-black with a Weaver Blue undertone ---- */
+  --pitch-900: #080A0E;
+  --pitch-800: #0D1016;
+  --pitch-700: #13171F;
+  --pitch-600: #1A1F2A;
+  --pitch-500: #232935;
 
-  --promo: #35D07F;
-  --releg: #E5484D;
-  --danger-bg: rgba(229, 72, 77, 0.10);
-  --promo-bg: rgba(53, 208, 127, 0.10);
+  --line:      rgba(var(--cmu-red-rgb), .22);
+  --line-soft: rgba(224, 224, 224, .10);
 
-  --display: 'Barlow Condensed', 'Oswald', system-ui, sans-serif;
-  --body: 'Inter', system-ui, -apple-system, sans-serif;
+  --cream:     #F2F1EE;
+  --muted:     #98A0AE;
+  --muted-dim: #6D6E71;
 
-  --r-sm: 6px;
-  --r: 10px;
-  --r-lg: 16px;
+  --promo:     #22C06B;  --promo-rgb: 34,192,107;
+  --releg:     #EF3A47;  --releg-rgb: 239,58,71;
+  --danger-bg: rgba(var(--releg-rgb), .10);
+  --promo-bg:  rgba(var(--promo-rgb), .10);
 
-  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.28);
+  /* Source Serif for headlines and figures, Open Sans for UI chrome */
+  --display: 'Source Serif 4', 'Source Serif Pro', Georgia, 'Times New Roman', serif;
+  --ui:      'Open Sans', system-ui, -apple-system, sans-serif;
+  --body:    'Open Sans', system-ui, -apple-system, sans-serif;
+
+  --r-sm: 4px;
+  --r: 7px;
+  --r-lg: 12px;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 30px rgba(0,0,0,.35);
   --maxw: 1180px;
 }
+
 
 * { box-sizing: border-box; }
 
@@ -41,8 +57,8 @@ html, body { margin: 0; padding: 0; }
 
 body {
   background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(53,208,127,.07), transparent 60%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 64px, transparent 64px 128px),
+    radial-gradient(1100px 520px at 50% -12%, rgba(var(--cmu-red-rgb),.10), transparent 62%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.014) 0 1px, transparent 1px 9px),
     var(--pitch-900);
   color: var(--cream);
   font-family: var(--body);
@@ -80,7 +96,7 @@ a { color: var(--gold-bright); text-decoration: none; }
 
 .brand-crest {
   width: 42px; height: 46px; flex: none;
-  background: linear-gradient(160deg, var(--gold-bright), var(--gold) 55%, #9C7B1E);
+  background: linear-gradient(160deg, var(--gold-bright), var(--gold) 55%, #7A0B1E);
   clip-path: polygon(50% 0, 100% 14%, 100% 62%, 50% 100%, 0 62%, 0 14%);
   display: grid; place-items: center;
   color: var(--pitch-900); font-family: var(--display);
@@ -109,13 +125,13 @@ a { color: var(--gold-bright); text-decoration: none; }
 }
 .live-dot i {
   width: 7px; height: 7px; border-radius: 50%; background: var(--promo);
-  box-shadow: 0 0 0 0 rgba(53,208,127,.6); animation: pulse 2s infinite;
+  box-shadow: 0 0 0 0 rgba(var(--promo-rgb),.6); animation: pulse 2s infinite;
 }
 .live-dot.is-idle { color: var(--muted-dim); }
 .live-dot.is-idle i { background: var(--muted-dim); animation: none; box-shadow: none; }
 @keyframes pulse {
-  70% { box-shadow: 0 0 0 8px rgba(53,208,127,0); }
-  100% { box-shadow: 0 0 0 0 rgba(53,208,127,0); }
+  70% { box-shadow: 0 0 0 8px rgba(var(--promo-rgb),0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--promo-rgb),0); }
 }
 
 /* ---------- Nav ---------- */
@@ -140,7 +156,7 @@ a { color: var(--gold-bright); text-decoration: none; }
   transition: color .15s ease, border-color .15s ease;
 }
 .nav button:hover { color: var(--cream); }
-.nav button.active { color: var(--gold-bright); border-bottom-color: var(--gold); }
+.nav button.active { color: var(--cream); border-bottom-color: var(--cmu-red); }
 
 /* ---------- League switcher ---------- */
 
@@ -155,7 +171,8 @@ a { color: var(--gold-bright); text-decoration: none; }
 }
 .league-switch button:hover { color: var(--cream); border-color: var(--line); }
 .league-switch button.active {
-  background: var(--gold); color: var(--pitch-900); border-color: var(--gold);
+  background: var(--cmu-red); color: #fff; border-color: var(--cmu-red);
+  box-shadow: 0 1px 0 var(--skibo), 0 2px 10px rgba(var(--cmu-red-rgb),.35);
 }
 
 /* ---------- Sections ---------- */
@@ -190,7 +207,7 @@ main { padding: 4px 0 80px; }
 .crest {
   width: 34px; height: 38px; flex: none; position: relative;
   clip-path: polygon(50% 0, 100% 14%, 100% 62%, 50% 100%, 0 62%, 0 14%);
-  background: linear-gradient(160deg, var(--c1, #2b6b4d), var(--c2, #123c2a));
+  background: linear-gradient(160deg, var(--c1, #2A3550), var(--c2, #141A26));
   display: grid; place-items: center; overflow: hidden;
 }
 .crest img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -224,7 +241,7 @@ main { padding: 4px 0 80px; }
   padding: 0; overflow: hidden; transition: border-color .15s ease;
 }
 .mu:hover { border-color: var(--line); }
-.mu.is-rivalry { border-color: rgba(212,175,55,.45); }
+.mu.is-rivalry { border-color: rgba(var(--gold-rgb),.45); }
 
 .mu-flag {
   display: flex; align-items: center; gap: 8px;
@@ -233,7 +250,7 @@ main { padding: 4px 0 80px; }
   background: linear-gradient(90deg, var(--gold-bright), var(--gold));
   font-weight: 700;
 }
-.mu-flag.six-pointer { background: linear-gradient(90deg, #ff8a8f, var(--releg)); color: #2a0708; }
+.mu-flag.six-pointer { background: linear-gradient(90deg, #FF9AA2, var(--releg)); color: #2A0A10; }
 
 .mu-body { padding: 12px 14px 14px; }
 
@@ -267,17 +284,17 @@ main { padding: 4px 0 80px; }
   font-size: 12px; line-height: 1.6; color: var(--muted);
 }
 .stakes b { color: var(--cream); font-weight: 600; }
-.stakes.peril { border-color: rgba(229, 72, 77, .3); background: var(--danger-bg); }
-.stakes.peril b { color: #ffb3b5; }
+.stakes.peril { border-color: rgba(var(--releg-rgb), .3); background: var(--danger-bg); }
+.stakes.peril b { color: #FFB3B8; }
 
 .chip {
   display: inline-block; padding: 2px 8px; border-radius: 999px;
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
   border: 1px solid var(--line-soft); color: var(--muted);
 }
-.chip.red { color: var(--releg); border-color: rgba(229,72,77,.35); background: var(--danger-bg); }
-.chip.green { color: var(--promo); border-color: rgba(53,208,127,.35); background: var(--promo-bg); }
-.chip.gold { color: var(--gold-bright); border-color: rgba(212,175,55,.4); background: rgba(212,175,55,.08); }
+.chip.red { color: var(--releg); border-color: rgba(var(--releg-rgb),.35); background: var(--danger-bg); }
+.chip.green { color: var(--promo); border-color: rgba(var(--promo-rgb),.35); background: var(--promo-bg); }
+.chip.gold { color: var(--gold-bright); border-color: rgba(var(--gold-rgb),.4); background: rgba(var(--gold-rgb),.08); }
 
 /* ---------- Tables ---------- */
 
@@ -314,9 +331,9 @@ table.lg tbody tr:hover { background: rgba(255,255,255,.02); }
 .zone-releg { background: var(--danger-bg); }
 .zone-promo { background: var(--promo-bg); }
 
-tr.divider-releg td { border-top: 2px dashed rgba(229,72,77,.4) !important; }
-tr.divider-promo td { border-top: 2px dashed rgba(53,208,127,.4) !important; }
-tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
+tr.divider-releg td { border-top: 2px dashed rgba(var(--releg-rgb),.4) !important; }
+tr.divider-promo td { border-top: 2px dashed rgba(var(--promo-rgb),.4) !important; }
+tr.divider-playoff td { border-top: 2px dashed rgba(var(--gold-rgb),.4) !important; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; font-size: 11px; color: var(--muted); }
 .legend i { display: inline-block; width: 10px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
@@ -326,8 +343,8 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
   width: 17px; height: 17px; border-radius: 3px; display: grid; place-items: center;
   font-size: 10px; font-weight: 700; font-family: var(--body);
 }
-.form b.W { background: rgba(53,208,127,.2); color: var(--promo); }
-.form b.L { background: rgba(229,72,77,.18); color: var(--releg); }
+.form b.W { background: rgba(var(--promo-rgb),.2); color: var(--promo); }
+.form b.L { background: rgba(var(--releg-rgb),.18); color: var(--releg); }
 .form b.T { background: rgba(255,255,255,.09); color: var(--muted); }
 
 /* ---------- Watch page ---------- */
@@ -375,9 +392,9 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 /* Pinned feature above the fixtures */
 .recap.is-pinned {
   margin: 8px 0 6px;
-  border-color: rgba(212, 175, 55, .34);
+  border-color: rgba(var(--gold-rgb), .34);
   background:
-    radial-gradient(900px 240px at 15% 0%, rgba(212,175,55,.09), transparent 70%),
+    radial-gradient(900px 240px at 15% 0%, rgba(var(--gold-rgb),.09), transparent 70%),
     linear-gradient(180deg, var(--pitch-700), var(--pitch-800));
   position: relative;
 }
@@ -443,7 +460,7 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 }
 .week-nav button:hover:not(:disabled) { color: var(--cream); border-color: var(--line); }
 .week-nav button:disabled { opacity: .3; cursor: default; }
-.week-nav button.current { color: var(--gold-bright); border-color: rgba(212,175,55,.4); }
+.week-nav button.current { color: var(--gold-bright); border-color: rgba(var(--gold-rgb),.4); }
 .week-tag {
   font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
   color: var(--muted-dim); padding: 0 4px;
@@ -456,7 +473,7 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 .pullquote {
   margin: 20px 0; padding: 18px 20px 16px;
   border-left: 3px solid var(--gold);
-  background: linear-gradient(90deg, rgba(212,175,55,.09), rgba(212,175,55,0) 70%);
+  background: linear-gradient(90deg, rgba(var(--gold-rgb),.09), rgba(var(--gold-rgb),0) 70%);
   border-radius: 0 var(--r-sm) var(--r-sm) 0;
   break-inside: avoid;
 }
@@ -482,12 +499,12 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 .read-more { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
 .read-more button {
   appearance: none; cursor: pointer; background: none;
-  border: 1px solid rgba(212,175,55,.4); border-radius: 999px;
+  border: 1px solid rgba(var(--gold-rgb),.4); border-radius: 999px;
   color: var(--gold-bright); font-family: var(--display);
   font-size: 14px; font-weight: 600; letter-spacing: .09em;
   text-transform: uppercase; padding: 8px 18px; transition: all .15s ease;
 }
-.read-more button:hover { background: rgba(212,175,55,.12); border-color: var(--gold); }
+.read-more button:hover { background: rgba(var(--gold-rgb),.12); border-color: var(--gold); }
 
 .archive-list { padding: 4px 0; }
 
@@ -544,7 +561,7 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
 .skel { height: 78px; border-radius: var(--r); background: linear-gradient(90deg, rgba(255,255,255,.03), rgba(255,255,255,.07), rgba(255,255,255,.03)); background-size: 200% 100%; animation: shim 1.3s infinite; }
 @keyframes shim { to { background-position: -200% 0; } }
 
-.err { border: 1px solid rgba(229,72,77,.35); background: var(--danger-bg); color: #ffb3b5; padding: 14px 16px; border-radius: var(--r); font-size: 13px; }
+.err { border: 1px solid rgba(var(--releg-rgb),.35); background: var(--danger-bg); color: #FFB3B8; padding: 14px 16px; border-radius: var(--r); font-size: 13px; }
 
 /* ---------- Footer ---------- */
 
@@ -564,4 +581,117 @@ tr.divider-playoff td { border-top: 2px dashed rgba(212,175,55,.4) !important; }
   .score { font-size: 26px; }
   .recap { padding: 20px 18px; }
   .section-head h2 { font-size: 20px; }
+}
+
+/* =========================================================
+   CARNEGIE MELLON IDENTITY LAYER
+   Core palette + Tartan Palette (brand.cmu.edu), Open Sans +
+   Source Serif. The plaid below is an original sett built from
+   the Tartan Palette threads — it is not the university tartan.
+   ========================================================= */
+
+/* ---- UI chrome keeps the sans; headlines and figures go serif ---- */
+.nav button,
+.league-switch button,
+.week-nav button,
+.read-more button,
+.recap-head .wknum,
+.watch-col h3,
+.crest span,
+.archive-row .wk,
+.header-meta .wk,
+.empty strong { font-family: var(--ui); }
+
+.nav button,
+.league-switch button,
+.week-nav button { letter-spacing: .08em; text-transform: uppercase; font-weight: 600; font-size: 12.5px; }
+
+.section-head h2,
+.recap h3,
+.brand h1 { letter-spacing: -0.012em; }
+
+.score, .pos, .watch-row .gap, .pot .amt, .prize-row .amt, .award .val {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ---- The sett ---- */
+.tartan {
+  background-color: #0A0D13;
+  background-image:
+    repeating-linear-gradient(90deg,
+      rgba(var(--cmu-red-rgb), .62) 0 20px,
+      transparent 20px 52px,
+      rgba(0, 150, 71, .42)         52px 64px,
+      transparent 64px 104px,
+      rgba(var(--gold-rgb), .70)   104px 108px,
+      transparent 108px 156px),
+    repeating-linear-gradient(0deg,
+      rgba(var(--cmu-red-rgb), .62) 0 20px,
+      transparent 20px 52px,
+      rgba(0, 150, 71, .42)         52px 64px,
+      transparent 64px 104px,
+      rgba(var(--gold-rgb), .70)   104px 108px,
+      transparent 108px 156px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.055) 0 2px, transparent 2px 8px),
+    repeating-linear-gradient(0deg,  rgba(0,0,0,.20)        0 2px, transparent 2px 8px);
+}
+
+/* A fine woven selvedge. Deliberately quiet: dark ground, narrow threads. */
+.tartan-rule {
+  height: 5px;
+  background-color: #10141B;
+  background-image:
+    repeating-linear-gradient(90deg,
+      rgba(var(--cmu-red-rgb), .80)  0 9px,
+      transparent                    9px 11px,
+      rgba(148, 17, 32, .50)        11px 16px,
+      transparent                   16px 33px,
+      rgba(0, 150, 71, .38)         33px 39px,
+      transparent                   39px 55px,
+      rgba(var(--gold-rgb), .70)    55px 57px,
+      transparent                   57px 74px),
+    repeating-linear-gradient(0deg, rgba(0,0,0,.50) 0 1px, transparent 1px 2px);
+  opacity: .9;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.6);
+}
+
+.site-header { border-bottom: 0; }
+
+/* ---- Crest: a Carnegie Red shield with a woven face ---- */
+.brand-crest {
+  background: var(--cmu-red) !important;
+  color: #fff !important;
+  border-radius: 3px 3px 12px 12px;
+  border: 1px solid rgba(255,255,255,.22);
+  box-shadow: 0 2px 0 var(--skibo), 0 6px 16px rgba(0,0,0,.5);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: .02em;
+}
+.brand-crest::after {
+  content: ""; position: absolute; inset: 0; opacity: .30; mix-blend-mode: overlay;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.9) 0 2px, transparent 2px 9px),
+    repeating-linear-gradient(0deg,  rgba(0,0,0,.9)       0 2px, transparent 2px 9px);
+}
+
+/* ---- Nav: a red underline instead of the gold one ---- */
+
+/* ---- Cards: hairline left thread on anything important ---- */
+.recap.pinned, .card.feature { position: relative; }
+.recap.pinned::before, .card.feature::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  border-radius: 3px 0 0 3px;
+  background: repeating-linear-gradient(180deg,
+    var(--cmu-red) 0 16px, var(--gold) 16px 20px, var(--green-thread) 20px 30px);
+  opacity: .85;
+}
+
+/* ---- Link + focus ---- */
+a { color: var(--gold-bright); }
+a:hover { color: #fff; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+@media (max-width: 640px) {
+  .nav button, .league-switch button { font-size: 11.5px; letter-spacing: .06em; }
 }
